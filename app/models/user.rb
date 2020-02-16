@@ -4,15 +4,15 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  enum role: [:default, :author, :admin]
+  enum status: [:active, :inactive, :blocked]
+
+  after_initialize :set_default_role_and_status, :if => :new_record?
+
   has_many :articles
 
-  validates :name, presence: true
-
-  enum role: [:default, :author, :admin]
-
-  after_initialize :set_default_role, :if => :new_record?
-
-  def set_default_role
+  def set_default_role_and_status
     self.role ||= :default
+    self.status ||= :active
   end
 end

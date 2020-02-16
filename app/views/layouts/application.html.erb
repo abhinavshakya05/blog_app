@@ -1,17 +1,32 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>BlogsApp</title>
+    <title>HelloAppRails6</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
-    <%= render 'layouts/session' %>
-    <%= render 'layouts/devise_notices' %>
+    <% if current_user.nil? %>
+      <%= link_to new_user_session_path, class: 'login-button' do %>Sign in<% end %>
+      <%= link_to new_user_registration_path do %>Register<% end %>
+    <% else %>
+      <%= link_to home_dashboard_path, class: 'login-button' do %>Dashboard<% end %>
+      <%= link_to destroy_user_session_path, method: :delete do %>Log out<% end %>
+    <% end %>
+
+    <% unless flash.empty? %>
+       <script type="text/javascript">
+          <% flash.each do |f| %>
+          <% type = f[0].to_s.gsub('alert', 'error').gsub('notice', 'info') %>
+            toastr['<%= type %>']('<%= f[1] %>');
+          <% end %>
+       </script>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>
